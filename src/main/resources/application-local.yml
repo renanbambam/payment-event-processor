@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payments
+    username: payments
+    password: payments
+  kafka:
+    bootstrap-servers: localhost:9092
+
+logging:
+  level:
+    dev.renanbambam.payment: DEBUG
+    org.apache.kafka: WARN
