@@ -36,3 +36,29 @@ API docs at `http://localhost:8080/swagger-ui.html`.
 ## Architecture
 
 Hexagonal (ports and adapters): the domain has no Spring, Kafka, or JPA dependencies. Domain models carry zero framework annotations, and services depend only on interfaces. Any adapter can be swapped without touching business logic.
+
+REST Controller → PublishPaymentPort → PaymentPublisherService → PaymentEventPublisher → Kafka
+↘ PaymentRepository → PostgreSQL
+Kafka → PaymentConsumer → QueryPaymentPort → PaymentQueryService → PaymentRepository → PostgreSQL
+
+## Known limitations
+
+- No authentication on endpoints — left out intentionally to keep the event flow visible.
+- Save to database and publish to Kafka happen sequentially without a distributed transaction: if the process dies between commit and publish, the event is lost. The Outbox pattern would fix this — write the event to a table in the same transaction, then publish from there asynchronously. Conscious trade-off for this scope.
+- The consumer marks `PROCESSING` but doesn't simulate the full lifecycle to `COMPLETED`/`FAILED`.
+- DLQ receives failed messages but has no automatic reprocessing; it would be manual today.
+- Producer retry is configured in yml; could be explicit exponential backoff.
+- Testcontainers only in the integration test; the rest use mocks.
+
+## What I'd do differently
+
+I'm serializing events as raw JSON strings. In a real system I'd use a schema registry (Avro or Protobuf) to version the event contract — as it stands, changing a field in `Payment` silently breaks older consumers with no build-time warning.
+
+## Tests
+
+```bash
+./gradlew test
+```
+
+Unit tests cover domain, services, controller (`@WebMvcTest`), and consumer. The full flow (REST → Kafka → database) runs with Testcontainers, spinning up real Kafka and Postgres instances — so that test requires Docker.
+
