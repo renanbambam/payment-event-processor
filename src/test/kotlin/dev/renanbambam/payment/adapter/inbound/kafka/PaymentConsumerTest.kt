@@ -7,12 +7,7 @@ import dev.renanbambam.payment.domain.model.PaymentStatus
 import dev.renanbambam.payment.domain.port.inbound.QueryPaymentPort
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import java.math.BigDecimal
 import java.time.Instant
 
@@ -25,8 +20,9 @@ class PaymentConsumerTest {
 
     @Test
     fun `atualiza status para processing ao consumir evento valido`() {
-        val record = record("pay-1", "{...}")
-        whenever(mapper.toEvent("{...}")).thenReturn(sampleEvent("pay-1"))
+        val raw = """{"paymentId":"pay-1"}"""
+        val record = record("pay-1", raw)
+        whenever(mapper.toEvent(raw)).thenReturn(sampleEvent("pay-1"))
 
         consumer.consume(record)
 

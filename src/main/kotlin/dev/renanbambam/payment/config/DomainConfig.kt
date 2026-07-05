@@ -9,7 +9,7 @@ import dev.renanbambam.payment.domain.service.PaymentQueryService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-// o domínio não conhece Spring: a fiação dos services fica aqui, na borda
+// service é classe pura, sem @Service — monto os beans aqui
 @Configuration
 class DomainConfig {
 

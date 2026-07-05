@@ -4,8 +4,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
-// os pacotes de entity e repository são separados na arquitetura hexagonal,
-// então aponto explicitamente onde o Spring Data deve procurar
+// entity e repository ficam em pacotes separados, então aponto os dois na mão
 @Configuration
 @EntityScan(basePackages = ["dev.renanbambam.payment.adapter.outbound.persistence.entity"])
 @EnableJpaRepositories(basePackages = ["dev.renanbambam.payment.adapter.outbound.persistence.repository"])

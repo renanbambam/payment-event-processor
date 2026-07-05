@@ -3,7 +3,6 @@ package dev.renanbambam.payment.domain.model
 import java.math.BigDecimal
 import java.time.Instant
 
-// entidade imutável — sem anotações de framework aqui
 data class Payment(
     val id: String,
     val amount: BigDecimal,

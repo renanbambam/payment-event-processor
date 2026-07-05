@@ -51,6 +51,10 @@ Qualquer adapter pode ser trocado sem tocar nas regras de negócio.
 ## Limitações que eu melhoraria
 
 - Sem autenticação nos endpoints (deixei de fora pra não esconder a lógica de evento).
+- Salvo no banco e publico no Kafka em sequência, sem transação entre os dois: se o processo
+  cai entre o commit e o publish, o evento se perde. O **Outbox pattern** (gravar o evento numa
+  tabela na mesma transação do pagamento e publicar depois a partir dela) resolveria essa
+  consistência entre banco e Kafka — foi o trade-off consciente que aceitei pro escopo.
 - O consumer marca `PROCESSING` mas não simula o processamento real até `COMPLETED`/`FAILED` —
   o ciclo de vida completo do pagamento ficou de fora.
 - A DLQ recebe as mensagens mas não tem reprocessamento automático; hoje seria manual.
@@ -59,9 +63,9 @@ Qualquer adapter pode ser trocado sem tocar nas regras de negócio.
 
 ## O que faria diferente
 
-Provavelmente usaria o outbox pattern em vez de salvar e publicar em sequência dentro do
-service. Do jeito que está, se o banco confirma e o Kafka cai logo depois, o evento se perde.
-Pro escopo do projeto aceitei esse trade-off, mas em produção não passaria.
+Hoje serializo o evento como JSON string na mão. Num sistema de verdade usaria um schema
+registry (Avro ou Protobuf) pra versionar o contrato do evento — do jeito que está, mudar um
+campo do `Payment` quebra consumer antigo sem nenhum aviso em tempo de build.
 
 ## Testes
 

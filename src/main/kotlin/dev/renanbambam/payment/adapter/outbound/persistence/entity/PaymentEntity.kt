@@ -1,12 +1,7 @@
 package dev.renanbambam.payment.adapter.outbound.persistence.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.Id
-import jakarta.persistence.Table
 import dev.renanbambam.payment.domain.model.PaymentStatus
+import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.Instant
 

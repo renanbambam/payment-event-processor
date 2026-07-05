@@ -9,7 +9,6 @@ import dev.renanbambam.payment.domain.port.outbound.PaymentRepository
 import java.time.Instant
 import java.util.UUID
 
-// só depende de interfaces (portas), nunca de implementações
 class PaymentPublisherService(
     private val publisher: PaymentEventPublisher,
     private val repository: PaymentRepository
